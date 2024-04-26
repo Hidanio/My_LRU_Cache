@@ -26,6 +26,14 @@ void LRU_Cache::put(std::string &key, int value) {
     ++size_;
 }
 
+void LRU_Cache::removeElement(const std::string &key) {
+    auto it = accessStorage_.find(key);
+    if (it != accessStorage_.end()) {
+        itemList_.erase(it->second);
+        accessStorage_.erase(key);
+    }
+}
+
 bool LRU_Cache::isEmpty() const {
     return size_ == 0;
 }

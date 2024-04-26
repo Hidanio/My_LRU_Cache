@@ -31,6 +31,8 @@ public:
 
     void put(std::string &key, int value);
 
+    void removeElement(const std::string &key);
+
 private:
     struct CacheItemNode {
     public:
