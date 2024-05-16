@@ -100,8 +100,10 @@ private:
             return it != other.it;
         }
     };
+
 public:
     Iterator begin();
+
     Iterator end();
 
 };

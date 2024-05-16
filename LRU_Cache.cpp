@@ -71,12 +71,14 @@ LRU_Cache &LRU_Cache::operator=(const LRU_Cache &other) {
     return *this;
 }
 
-LRU_Cache::LRU_Cache(LRU_Cache &&other) noexcept : size_(other.size_), capacity_(other.capacity_), itemList_(std::move(other.itemList_)), accessStorage_(std::move(other.accessStorage_)){
+LRU_Cache::LRU_Cache(LRU_Cache &&other) noexcept: size_(other.size_), capacity_(other.capacity_),
+                                                  itemList_(std::move(other.itemList_)),
+                                                  accessStorage_(std::move(other.accessStorage_)) {
     other.size_ = 0;
 }
 
-LRU_Cache& LRU_Cache::operator=(LRU_Cache &&other) noexcept{
-    if(this != &other){
+LRU_Cache &LRU_Cache::operator=(LRU_Cache &&other) noexcept {
+    if (this != &other) {
         capacity_ = other.capacity_;
         size_ = other.size_;
         itemList_ = std::move(other.itemList_);
