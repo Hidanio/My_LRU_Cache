@@ -8,7 +8,7 @@ size_t LRU_Cache::size() const {
     return size_;
 }
 
-void LRU_Cache::put(std::string &key, int value) {
+void LRU_Cache::put(const std::string &key, int value) {
     auto it = accessStorage_.find(key);
     if (it != accessStorage_.end()) {
         it->second->value = value;
@@ -88,4 +88,12 @@ LRU_Cache& LRU_Cache::operator=(LRU_Cache &&other) noexcept{
 
 LRU_Cache::~LRU_Cache() {
 
+}
+
+LRU_Cache::Iterator LRU_Cache::begin() {
+    return Iterator(itemList_.begin());
+}
+
+LRU_Cache::Iterator LRU_Cache::end() {
+    return LRU_Cache::Iterator(itemList_.end());
 }

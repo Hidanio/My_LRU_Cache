@@ -15,11 +15,11 @@ public:
 
     LRU_Cache(const LRU_Cache &other);
 
-    LRU_Cache& operator=(const LRU_Cache &other);
+    LRU_Cache &operator=(const LRU_Cache &other);
 
     LRU_Cache(LRU_Cache &&other) noexcept;
 
-    LRU_Cache& operator=(LRU_Cache &&other) noexcept;
+    LRU_Cache &operator=(LRU_Cache &&other) noexcept;
 
     ~LRU_Cache();
 
@@ -29,9 +29,10 @@ public:
 
     void clear();
 
-    void put(std::string &key, int value);
+    void put(const std::string &key, int value);
 
     void removeElement(const std::string &key);
+
 
 private:
     struct CacheItemNode {
@@ -39,7 +40,7 @@ private:
         std::string key;
         int value = 0;
 
-       explicit CacheItemNode(std::string key, int value) : key(std::move(key)), value(value) {}
+        explicit CacheItemNode(std::string key, int value) : key(std::move(key)), value(value) {}
     };
 
     std::unordered_map<std::string, std::list<CacheItemNode>::iterator> accessStorage_;
@@ -49,12 +50,60 @@ private:
 
 
     class Iterator {
-    public:
-
     private:
         using list_iterator = std::list<CacheItemNode>::iterator;
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using ptrItemNode = CacheItemNode *;
+        using refItemNode = CacheItemNode &;
+
         list_iterator it;
+
+    public:
+        explicit Iterator(list_iterator newIt) : it(newIt) {}
+
+        refItemNode operator*() const {
+            return *it;
+        }
+
+        ptrItemNode operator->() const {
+            return &(*it);
+        }
+
+        Iterator &operator++() {
+            ++it;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        Iterator operator--() {
+            --it;
+            return *this;
+        }
+
+        Iterator operator--(int) {
+            Iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        bool operator==(const Iterator &other) const {
+            return it == other.it;
+        }
+
+        bool operator!=(const Iterator &other) const {
+            return it != other.it;
+        }
     };
+public:
+    Iterator begin();
+    Iterator end();
+
 };
 
 
