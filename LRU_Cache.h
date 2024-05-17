@@ -52,8 +52,6 @@ private:
     class Iterator {
     private:
         using list_iterator = std::list<CacheItemNode>::iterator;
-        using iterator_category = std::bidirectional_iterator_tag;
-        using difference_type = std::ptrdiff_t;
         using ptrItemNode = CacheItemNode *;
         using refItemNode = CacheItemNode &;
 
