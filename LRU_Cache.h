@@ -1,6 +1,8 @@
 #ifndef LRU_CACHE_LRU_CACHE_H
 #define LRU_CACHE_LRU_CACHE_H
 
+#pragma once
+
 #include <unordered_map>
 #include <string>
 #include <list>
