@@ -8,8 +8,26 @@
 #include <utility>
 
 class LRU_Cache {
+
+private:
+    struct CacheItemNode {
+    public:
+        std::string key;
+        int value;
+
+        CacheItemNode(std::string key, int value) noexcept: key(std::move(key)), value(value) {}
+    };
+
+    std::unordered_map<std::string, std::list<CacheItemNode>::iterator> accessStorage_;
+    std::list<CacheItemNode> itemList_;
+    size_t capacity_ = 0;
+    size_t size_ = 0;
+    using const_iterator = typename std::list<CacheItemNode>::const_iterator;
+
 public:
     LRU_Cache() = delete;
+
+    ~LRU_Cache() = default;
 
     explicit LRU_Cache(size_t capacity);
 
@@ -21,89 +39,37 @@ public:
 
     LRU_Cache &operator=(LRU_Cache &&other) noexcept;
 
-    ~LRU_Cache();
+    int operator[](size_t index) const;
 
-    bool isEmpty() const;
+    bool empty() const noexcept {
+        return size_ == 0;
+    }
 
-    size_t size() const;
+    size_t size() const noexcept {
+        return size_;
+    }
 
-    void clear();
-
-    void put(const std::string &key, int value);
-
-    void removeElement(const std::string &key);
-
-
-private:
-    struct CacheItemNode {
-    public:
-        std::string key;
-        int value = 0;
-
-        explicit CacheItemNode(std::string key, int value) : key(std::move(key)), value(value) {}
-    };
-
-    std::unordered_map<std::string, std::list<CacheItemNode>::iterator> accessStorage_;
-    std::list<CacheItemNode> itemList_;
-    size_t capacity_ = 0;
-    size_t size_ = 0;
+    void clear() noexcept {
+        itemList_.clear();
+        accessStorage_.clear();
+        size_ = 0;
+    }
 
 
-    class Iterator {
-    private:
-        using list_iterator = std::list<CacheItemNode>::iterator;
-        using ptrItemNode = CacheItemNode *;
-        using refItemNode = CacheItemNode &;
+    void put(std::string key, int value);
 
-        list_iterator it;
 
-    public:
-        explicit Iterator(list_iterator newIt) : it(newIt) {}
+    int get(std::string_view key);
 
-        refItemNode operator*() const {
-            return *it;
-        }
+    void remove(const std::string &key);
 
-        ptrItemNode operator->() const {
-            return &(*it);
-        }
+    const_iterator begin() const { return std::begin(itemList_); }
 
-        Iterator &operator++() {
-            ++it;
-            return *this;
-        }
+    const_iterator end() const { return std::end(itemList_); }
 
-        Iterator operator++(int) {
-            Iterator tmp = *this;
-            ++(*this);
-            return tmp;
-        }
+    const_iterator cbegin() const { return std::cbegin(itemList_); }
 
-        Iterator operator--() {
-            --it;
-            return *this;
-        }
-
-        Iterator operator--(int) {
-            Iterator tmp = *this;
-            --(*this);
-            return tmp;
-        }
-
-        bool operator==(const Iterator &other) const {
-            return it == other.it;
-        }
-
-        bool operator!=(const Iterator &other) const {
-            return it != other.it;
-        }
-    };
-
-public:
-    Iterator begin();
-
-    Iterator end();
-
+    const_iterator cend() const { return std::cend(itemList_); }
 };
 
 
