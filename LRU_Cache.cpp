@@ -15,11 +15,11 @@ void LRU_Cache::put(std::string key, int value) {
             itemList_.pop_back();
             --size_;
         }
-    }
 
-    itemList_.emplace_front(key, value);
-    accessStorage_[std::move(key)] = itemList_.begin();
-    ++size_;
+        itemList_.emplace_front(key, value);
+        accessStorage_[std::move(key)] = itemList_.begin();
+        ++size_;
+    }
 }
 
 void LRU_Cache::remove(const std::string &key) {
@@ -28,12 +28,13 @@ void LRU_Cache::remove(const std::string &key) {
         itemList_.erase(it->second);
         accessStorage_.erase(key);
     }
+    --size_;
 }
 
-int LRU_Cache::get(std::string_view key) {
+std::optional<int> LRU_Cache::get(std::string_view key) {
     auto el = accessStorage_.find(key.data());
     if (el == accessStorage_.end()) {
-        return -1;
+        return std::nullopt;
     }
 
     itemList_.splice(itemList_.begin(), itemList_, el->second);
@@ -65,13 +66,12 @@ LRU_Cache &LRU_Cache::operator=(const LRU_Cache &other) {
     return *this;
 }
 
-int LRU_Cache::operator[](size_t index) const {
-    auto it = itemList_.begin();
-    for (auto i = 0; i < index; ++i) {
-        it++;
+int LRU_Cache::operator[](const std::string& key) {
+    auto result = get(key);
+    if (!result.has_value()) {
+        throw std::out_of_range("Key not found in LRU cache");
     }
-
-    return it->value;
+    return result.value();
 }
 
 LRU_Cache::LRU_Cache(LRU_Cache &&other) noexcept: size_(other.size_), capacity_(other.capacity_),

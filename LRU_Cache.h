@@ -18,7 +18,7 @@ private:
         CacheItemNode(std::string key, int value) noexcept: key(std::move(key)), value(value) {}
     };
 
-    std::unordered_map<std::string, std::list<CacheItemNode>::iterator> accessStorage_;
+    std::unordered_map<std::string_view , std::list<CacheItemNode>::iterator> accessStorage_;
     std::list<CacheItemNode> itemList_;
     size_t capacity_ = 0;
     size_t size_ = 0;
@@ -39,7 +39,7 @@ public:
 
     LRU_Cache &operator=(LRU_Cache &&other) noexcept;
 
-    int operator[](size_t index) const;
+    int operator[](const std::string& key);
 
     bool empty() const noexcept {
         return size_ == 0;
@@ -58,8 +58,7 @@ public:
 
     void put(std::string key, int value);
 
-
-    int get(std::string_view key);
+    std::optional<int> get(std::string_view key);
 
     void remove(const std::string &key);
 
